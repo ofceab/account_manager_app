@@ -6,6 +6,7 @@ import 'package:account_manager_app/presentation/screens/error/error.dart';
 import 'package:account_manager_app/presentation/screens/loading/loading.dart';
 import 'package:account_manager_app/presentation/widgets/alert_dialog.dart';
 import 'package:account_manager_app/presentation/widgets/details_list_item.dart';
+import 'package:account_manager_app/services/pdf/pdf_creator.dart';
 import 'package:account_manager_app/services/transaction_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -152,10 +153,7 @@ class DetailsList extends StatelessWidget {
   Padding get _buildFLoatingActionButton => Padding(
         padding: const EdgeInsets.only(bottom: AppTheme.smallSpacing + 55),
         child: FloatingActionButton(
-          onPressed: () {
-            //TODO
-            //ADD THE function to download the file
-          },
+          onPressed: () async => await PdfCreator.createOneUserRapport(user),
           child: Icon(Icons.download_rounded, color: AppTheme.creditColor),
           tooltip: 'Create a user',
         ),

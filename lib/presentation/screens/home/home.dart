@@ -4,6 +4,7 @@ import 'package:account_manager_app/presentation/screens/error/error.dart';
 import 'package:account_manager_app/presentation/screens/loading/loading.dart';
 import 'package:account_manager_app/presentation/widgets/transaction_list_item.dart';
 import 'package:account_manager_app/presentation/widgets/user_create_alert.dart';
+import 'package:account_manager_app/services/pdf/pdf_creator.dart';
 import 'package:account_manager_app/services/transaction_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,34 @@ class Home extends StatelessWidget {
         appBar: AppBar(
           title: Text('Dashboard'),
           centerTitle: true,
+          actions: [
+            StreamBuilder(
+              stream: _transactionService.fetchAllUsersTransaction(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError)
+                  return Error();
+                else if (snapshot.hasData) {
+                  //Get documents
+                  List<QueryDocumentSnapshot> _docs = snapshot.data.docs;
+                  //Instead retuning the listView itself
+                  return IconButton(
+                      icon: Icon(
+                        Icons.save,
+                        color: Colors.white,
+                      ),
+                      onPressed: () async =>
+                          await PdfCreator.createAllUsersRapports(
+                              _docs.map((doc) {
+                            User user =
+                                User.fromDocumentSnaphot(doc.id, doc.data());
+                            return user;
+                          }).toList()));
+                }
+                //Loading
+                return Loading();
+              },
+            )
+          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showDialog(context),
@@ -88,7 +117,6 @@ class Home extends StatelessWidget {
                     },
                   );
                 }
-
                 //Loading
                 return Loading();
               },
