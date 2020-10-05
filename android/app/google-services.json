@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "233151358104",
+    "firebase_url": "https://account-manager-app-a325c.firebaseio.com",
+    "project_id": "account-manager-app-a325c",
+    "storage_bucket": "account-manager-app-a325c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233151358104:android:12467096f03dd153ca1ced",
+        "android_client_info": {
+          "package_name": "com.shifa.account_manager_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233151358104-kbgnsf4er4ster344hta95ph07mob51d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaaNSBuelcCoQvZQlv3mP4zaeqm2ShRYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233151358104-kbgnsf4er4ster344hta95ph07mob51d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
