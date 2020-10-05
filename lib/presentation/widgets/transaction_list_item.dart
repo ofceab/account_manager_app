@@ -13,14 +13,14 @@ class TransactionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(user.transactionList);
     return GestureDetector(
       onTap: () => _pushToDetailsScreen(context),
       child: Container(
         color: Colors.white,
-        margin:
-            const EdgeInsets.only(top: AppTheme.generalOutSpacing),
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppTheme.generalOutSpacing-15),
+        margin: const EdgeInsets.only(top: AppTheme.generalOutSpacing),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.generalOutSpacing - 15),
         height: AppTheme.listItemHeight,
         child: Column(
           children: [
@@ -33,23 +33,23 @@ class TransactionListItem extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: _deleteUserHandler,
-                  icon: Icon(Icons.delete_outline,color: Colors.red),
+                  icon: Icon(Icons.delete_outline, color: Colors.red),
                 )
               ],
             ),
             Expanded(
-                          child: Row(
+              child: Row(
                 children: [
                   _buildCustomContainer(
                       'Credit',
                       user.calculateCreditAmount.toString(),
                       AppTheme.creditColor),
-                  _buildCustomContainer('Debit',
-                      user.calculateDebitAmount.toString(), AppTheme.debitColor),
                   _buildCustomContainer(
-                      'Balance',
-                      user.calculateBalanceAmount.toString(),
-                      Colors.blue[100]),
+                      'Debit',
+                      user.calculateDebitAmount.toString(),
+                      AppTheme.debitColor),
+                  _buildCustomContainer('Balance',
+                      user.calculateBalanceAmount.toString(), Colors.blue[100]),
                 ],
               ),
             )
@@ -64,28 +64,22 @@ class TransactionListItem extends StatelessWidget {
       String nameOfField, String amount, Color color) {
     return Expanded(
         child: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 7,
-                color: color,
-                offset: Offset(1.1,3.3)
-              )
-            ],
-              borderRadius: BorderRadius.circular(15), color: color),
-          margin: const EdgeInsets.only(
-              left: AppTheme.smallSpacing-2,
-              right: AppTheme.smallSpacing-2,
-              bottom: (AppTheme.smallSpacing+2)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(nameOfField, style: AppTheme.generalTextStyle),
-              Text('$amount €', style: AppTheme.generalTextStyle),
-            ],
-          ),
-        ));
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(blurRadius: 7, color: color, offset: Offset(1.1, 3.3))
+      ], borderRadius: BorderRadius.circular(15), color: color),
+      margin: const EdgeInsets.only(
+          left: AppTheme.smallSpacing - 2,
+          right: AppTheme.smallSpacing - 2,
+          bottom: (AppTheme.smallSpacing + 2)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(nameOfField, style: AppTheme.generalTextStyle),
+          Text('$amount €', style: AppTheme.generalTextStyle),
+        ],
+      ),
+    ));
   }
 
   //Handler to delete user;

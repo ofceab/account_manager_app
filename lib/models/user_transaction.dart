@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'transaction.dart';
 
 class User {
   String userID; //Represent the docID
   String name; // Here is store the nalme of the user
   String userCreationDate;
-  List<Transaction> transactionList;
+  List<dynamic> transactionList;
 
   User({name, transactionList}) {
     this.name = name;
@@ -24,15 +22,14 @@ class User {
   Map<String, dynamic> userToMap() => {
         'name': this.name,
         'created': this.userCreationDate.toString(),
-        'transactionList': jsonEncode(this.transactionList)
+        'transactionList': getMappedTransactionList
       };
 
   //Calculate credit total amount
   double get calculateCreditAmount {
     double creditAmount = 0;
 
-    //Calculation
-    transactionList.forEach((Transaction transaction) {
+    transactionList.forEach((transaction) {
       creditAmount += transaction.credit;
     });
     return creditAmount;
@@ -43,7 +40,7 @@ class User {
     double debitAmount = 0;
 
     //Calculation
-    transactionList.forEach((Transaction transaction) {
+    transactionList.forEach((transaction) {
       debitAmount += transaction.debit;
     });
     return debitAmount;
@@ -67,15 +64,19 @@ class User {
     this.name = data['name'];
     this.userCreationDate = data['created'];
     //Loop through data to create transaction List
-    if(jsonDecode(data['transactionList']).length!=0){
-      this.transactionList =
-        jsonDecode(data['transactionList']).map((dynamic transaction) {
-          print(transaction);
-      return Transaction.mapToTransaction(transaction);
-    });
-    }
-    else{
-      this.transactionList =[];
-    }
+    if (data['transactionList'].length != 0) {
+      this.transactionList = data['transactionList'].map((transaction) {
+        print(transaction);
+        return Transaction.mapToTransaction(transaction);
+      }).toList();
+    } else {
+      this.transactionList = [];
     }
   }
+
+  //Turn List of transaction to map for storage
+  List<dynamic> get getMappedTransactionList => this
+      .transactionList
+      .map((transaction) => transaction.transactionToMap())
+      .toList();
+}

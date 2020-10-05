@@ -16,19 +16,50 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+        bottomNavigationBar: BottomAppBar(
+          child: StreamBuilder(
+            stream: _transactionService.fetchAllUsersTransaction(),
+            builder: (context, snapshot) {
+              List<QueryDocumentSnapshot> _docs = snapshot.data.docs;
+              double _creditTotalAmount = 0;
+              double _balanceTotalAmount = 0;
+              double _debitTotalAmount = 0;
+              _docs.forEach((userTransaction) {
+                User user = User.fromDocumentSnaphot(
+                    userTransaction.id, userTransaction.data());
+                _creditTotalAmount += user.calculateCreditAmount;
+                _debitTotalAmount += user.calculateDebitAmount;
+                _balanceTotalAmount += user.calculateBalanceAmount;
+              });
+              return Container(
+                height: 80,
+                child: Row(
+                  children: [
+                    _buildCustomContainer('Credit',
+                        _creditTotalAmount.toString(), AppTheme.creditColor),
+                    _buildCustomContainer('Debit', _debitTotalAmount.toString(),
+                        AppTheme.debitColor),
+                    _buildCustomContainer('Balance',
+                        _balanceTotalAmount.toString(), Colors.blue[100]),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
           title: Text('Dashboard'),
           centerTitle: true,
         ),
         floatingActionButton: FloatingActionButton(
-        onPressed: () => _showDialog(context),
-        child: Icon(Icons.add, color: Colors.white),
-        tooltip: 'Create a user',
-      ),
+          onPressed: () => _showDialog(context),
+          child: Icon(Icons.add, color: Colors.white),
+          tooltip: 'Create a user',
+        ),
         body: Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.generalOutSpacing-10,
+              horizontal: AppTheme.generalOutSpacing - 10,
             ),
             child: StreamBuilder<QuerySnapshot>(
               stream: _transactionService.fetchAllUsersTransaction(),
@@ -61,5 +92,22 @@ class Home extends StatelessWidget {
 
   _showDialog(BuildContext context) {
     showDialog(context: context, child: UserCreateAlert());
+  }
+
+  //Build container
+  Expanded _buildCustomContainer(
+      String nameOfField, String amount, Color color) {
+    return Expanded(
+      child: Container(
+          decoration: BoxDecoration(boxShadow: [], color: color),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(nameOfField, style: AppTheme.generalTextStyle),
+              Text('$amount €', style: AppTheme.generalTextStyle),
+            ],
+          )),
+    );
   }
 }

@@ -11,7 +11,7 @@ mixin TransactionHelpers {
     assert(userData != null);
     try {
       _transactions.add(userData);
-    return null;
+      return null;
     } catch (e) {
       rethrow;
     }
@@ -22,17 +22,18 @@ mixin TransactionHelpers {
     assert(docId != null);
     try {
       _transactions.doc(docId).delete();
-    return null;
+      return null;
     } catch (e) {
       rethrow;
     }
   }
 
-  //Update  and add userTransaction
+  ///Update  and add userTransaction
+  ///{dynamic} here stand for Map<String, dynamic>
   Future<String> addAndUpdateuserTransactionsList(
       {@required String docId,
-      @required String newTransactionList,
-      @required String operationType}) async {
+      @required List<dynamic> newTransactionList,
+      String operationType: 'add'}) async {
     //Assertion chechings
     assert(docId != null);
     assert(newTransactionList != null);
@@ -53,6 +54,11 @@ mixin TransactionHelpers {
   }
 
   //Get all usersTransaction
-  Stream<QuerySnapshot> fetchAllUsersTransaction()=>
-       _transactions.snapshots(includeMetadataChanges: true);
+  Stream<QuerySnapshot> fetchAllUsersTransaction({String userID}) =>
+      _transactions.snapshots(includeMetadataChanges: true);
+
+  //Get one userTransaction
+  Stream<DocumentSnapshot> fetchOneUsersTransaction(
+          {@required String userID}) =>
+      _transactions.doc(userID).snapshots(includeMetadataChanges: true);
 }

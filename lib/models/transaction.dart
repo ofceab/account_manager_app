@@ -12,7 +12,7 @@ class Transaction {
     this.debit = debit;
     this.particular = particular;
 
-    //Initalisation of the date
+    ///Initalisation of the date
     this.transactionDate = transactionDate;
 
     //Assertion chechings
@@ -22,7 +22,7 @@ class Transaction {
     assert(transactionDate != null);
   }
 
-  //To turn a transaction to map format
+  ///To turn a transaction to map format
   Map<String, dynamic> transactionToMap() => {
         'particular': this.particular,
         'credit': this.credit,
@@ -30,10 +30,17 @@ class Transaction {
         'created': this.transactionDate
       };
 
-  //To turn a map to transaction format
+  ///To turn a map to transaction format
+  //  Transaction.mapToTransaction(Map<String, dynamic> data) {
+  //   this.particular = data['particular'];
+  //   this.credit = data['credit'];
+  //   this.debit = data['debit'];
+  //   this.transactionDate = data['created'];
+  // }
+  ///To turn a map to transaction format
   Transaction.mapToTransaction(Map<String, dynamic> data) {
     this.particular = data['particular'];
-    this.credit = data['particular'];
+    this.credit = data['credit'];
     this.debit = data['debit'];
     this.transactionDate = data['created'];
   }
