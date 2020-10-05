@@ -20,6 +20,43 @@ class DetailsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        bottomNavigationBar: BottomAppBar(
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: _transactionService.fetchOneUsersTransaction(
+                userID: user.userID),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                DocumentSnapshot _doc = snapshot.data;
+                double _creditTotalAmount = 0;
+                double _balanceTotalAmount = 0;
+                double _debitTotalAmount = 0;
+                _doc['transactionList'].forEach((dynamic transaction) {
+                  Transaction.Transaction _transaction =
+                      Transaction.Transaction.mapToTransaction(transaction);
+                  _creditTotalAmount += _transaction.credit;
+                  _debitTotalAmount += _transaction.debit;
+                  _balanceTotalAmount +=
+                      (_transaction.credit - _transaction.debit);
+                });
+                return Container(
+                  height: 50,
+                  child: Row(
+                    children: [
+                      _buildCustomContainer('Credit',
+                          _creditTotalAmount.toString(), AppTheme.creditColor),
+                      _buildCustomContainer('Debit',
+                          _debitTotalAmount.toString(), AppTheme.debitColor),
+                      _buildCustomContainer('Balance',
+                          _balanceTotalAmount.toString(), Colors.blue[100]),
+                    ],
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
+        ),
         backgroundColor: Colors.grey.shade200,
         floatingActionButton: _buildFLoatingActionButton,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -37,7 +74,7 @@ class DetailsList extends StatelessWidget {
                   DocumentSnapshot _doc = snapshot.data;
                   User _user = User.fromDocumentSnaphot(_doc.id, _doc.data());
                   return IconButton(
-                      icon: Icon(Icons.library_add_outlined),
+                      icon: Icon(Icons.playlist_add),
                       onPressed: () => _showDialog(context, _user));
                 }
                 return Loading();
@@ -105,15 +142,15 @@ class DetailsList extends StatelessWidget {
               children: <Widget>[
                 Text('Date'),
                 Text('Particular'),
-                Text('Credit'),
-                Text('Debit')
+                Text('Credit ₹'),
+                Text('Debit ₹')
               ]),
         ));
   }
 
   //Build floatingAction Button
   Padding get _buildFLoatingActionButton => Padding(
-        padding: const EdgeInsets.only(bottom: AppTheme.smallSpacing + 5),
+        padding: const EdgeInsets.only(bottom: AppTheme.smallSpacing + 55),
         child: FloatingActionButton(
           onPressed: () {
             //TODO
@@ -147,5 +184,24 @@ class DetailsList extends StatelessWidget {
           docId: user.userID,
           newTransactionList: user.getMappedTransactionList);
     }
+  }
+
+  //Build container
+  Expanded _buildCustomContainer(
+      String nameOfField, String amount, Color color) {
+    return Expanded(
+      child: Container(
+          decoration: BoxDecoration(boxShadow: [], color: color),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(nameOfField,
+                  style: AppTheme.generalTextStyle
+                      .copyWith(fontWeight: FontWeight.w100)),
+              Text('$amount ₹', style: AppTheme.generalTextStyle),
+            ],
+          )),
+    );
   }
 }

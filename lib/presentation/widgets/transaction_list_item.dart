@@ -29,7 +29,10 @@ class TransactionListItem extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 8),
-                  child: Text(user.name, style: AppTheme.userStyle),
+                  child: Text(
+                      '${user.name[0].toUpperCase()}${user.name.substring(1)}',
+                      style: AppTheme.userStyle
+                          .copyWith(color: Colors.blue.shade300)),
                 ),
                 IconButton(
                   onPressed: _deleteUserHandler,

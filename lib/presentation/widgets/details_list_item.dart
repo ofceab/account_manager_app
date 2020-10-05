@@ -42,8 +42,8 @@ class DetailsListItem extends StatelessWidget {
                 children: <Widget>[
                   Text(date),
                   Text(particular),
-                  Text(credit.toString()),
-                  Text(debit.toString())
+                  Text('${credit.toString()} ₹'),
+                  Text('${debit.toString()} ₹')
                 ]),
             itemBuilder: (context) {
               return ['Edit', 'Delete'].map((operation) {
@@ -97,9 +97,9 @@ class DetailsListItem extends StatelessWidget {
   _showToast(String message) => Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
+      gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
       backgroundColor: Colors.white,
-      textColor: AppTheme.creditColor,
+      textColor: Colors.green,
       fontSize: 16.0);
 }

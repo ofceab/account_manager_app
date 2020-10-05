@@ -20,30 +20,34 @@ class Home extends StatelessWidget {
           child: StreamBuilder(
             stream: _transactionService.fetchAllUsersTransaction(),
             builder: (context, snapshot) {
-              List<QueryDocumentSnapshot> _docs = snapshot.data.docs;
-              double _creditTotalAmount = 0;
-              double _balanceTotalAmount = 0;
-              double _debitTotalAmount = 0;
-              _docs.forEach((userTransaction) {
-                User user = User.fromDocumentSnaphot(
-                    userTransaction.id, userTransaction.data());
-                _creditTotalAmount += user.calculateCreditAmount;
-                _debitTotalAmount += user.calculateDebitAmount;
-                _balanceTotalAmount += user.calculateBalanceAmount;
-              });
-              return Container(
-                height: 80,
-                child: Row(
-                  children: [
-                    _buildCustomContainer('Credit',
-                        _creditTotalAmount.toString(), AppTheme.creditColor),
-                    _buildCustomContainer('Debit', _debitTotalAmount.toString(),
-                        AppTheme.debitColor),
-                    _buildCustomContainer('Balance',
-                        _balanceTotalAmount.toString(), Colors.blue[100]),
-                  ],
-                ),
-              );
+              if (snapshot.hasData) {
+                List<QueryDocumentSnapshot> _docs = snapshot.data.docs;
+                double _creditTotalAmount = 0;
+                double _balanceTotalAmount = 0;
+                double _debitTotalAmount = 0;
+                _docs.forEach((userTransaction) {
+                  User user = User.fromDocumentSnaphot(
+                      userTransaction.id, userTransaction.data());
+                  _creditTotalAmount += user.calculateCreditAmount;
+                  _debitTotalAmount += user.calculateDebitAmount;
+                  _balanceTotalAmount += user.calculateBalanceAmount;
+                });
+                return Container(
+                  height: 50,
+                  child: Row(
+                    children: [
+                      _buildCustomContainer('Credit',
+                          _creditTotalAmount.toString(), AppTheme.creditColor),
+                      _buildCustomContainer('Debit',
+                          _debitTotalAmount.toString(), AppTheme.debitColor),
+                      _buildCustomContainer('Balance',
+                          _balanceTotalAmount.toString(), Colors.blue[100]),
+                    ],
+                  ),
+                );
+              } else {
+                return Container();
+              }
             },
           ),
         ),
@@ -75,6 +79,7 @@ class Home extends StatelessWidget {
 
                   //Instead retuning the listView itself
                   return ListView.builder(
+                    physics: BouncingScrollPhysics(),
                     itemCount: snapshot.data.size,
                     itemBuilder: (context, index) {
                       User user = User.fromDocumentSnaphot(
@@ -104,8 +109,10 @@ class Home extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(nameOfField, style: AppTheme.generalTextStyle),
-              Text('$amount €', style: AppTheme.generalTextStyle),
+              Text(nameOfField,
+                  style: AppTheme.generalTextStyle
+                      .copyWith(fontWeight: FontWeight.w100)),
+              Text('$amount ₹', style: AppTheme.generalTextStyle),
             ],
           )),
     );
