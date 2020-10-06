@@ -18,7 +18,7 @@ class PdfCreator {
         pageFormat: PdfPageFormat.a4,
         orientation: pw.PageOrientation.portrait,
         build: (pw.Context context) {
-          return [
+          return <pw.Widget>[
             pw.Header(
                 level: 0,
                 child: pw.Text('Account Manager (${user.name})',
@@ -125,6 +125,12 @@ class PdfCreator {
     pdf.addPage(pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         orientation: pw.PageOrientation.portrait,
+        header: (pw.Context context) {
+          return pw.Header(
+              level: 0,
+              child: pw.Text('Account Manager',
+                  style: pw.TextStyle(fontSize: 35)));
+        },
         build: (pw.Context context) {
           return _buildFullList(users);
         }));
@@ -156,7 +162,7 @@ class PdfCreator {
   }
 
   //Build Full List Widget
-  static _buildFullList(List<User> users) {
+  static List<pw.Widget> _buildFullList(List<User> users) {
     return users.map((User user) {
       return pw.Column(children: [
         pw.Header(level: 2, child: pw.Text(user.name)),
@@ -205,7 +211,7 @@ class PdfCreator {
               ]);
             }).toList()),
         pw.Header(
-            margin: pw.EdgeInsets.only(top: 15),
+            margin: pw.EdgeInsets.only(top: 15, bottom: 25),
             level: 2,
             child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
