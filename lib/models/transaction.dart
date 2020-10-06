@@ -31,13 +31,6 @@ class Transaction {
       };
 
   ///To turn a map to transaction format
-  //  Transaction.mapToTransaction(Map<String, dynamic> data) {
-  //   this.particular = data['particular'];
-  //   this.credit = data['credit'];
-  //   this.debit = data['debit'];
-  //   this.transactionDate = data['created'];
-  // }
-  ///To turn a map to transaction format
   Transaction.mapToTransaction(Map<String, dynamic> data) {
     this.particular = data['particular'];
     this.credit = data['credit'];

@@ -67,7 +67,8 @@ class Home extends StatelessWidget {
                   List<QueryDocumentSnapshot> _docs = snapshot.data.docs;
 
                   if (_docs.length == 0) {
-                    return Icon(Icons.print_disabled);
+                    return IconButton(
+                        onPressed: null, icon: Icon(Icons.print_disabled));
                   }
                   //Instead retuning the listView itself
                   return IconButton(
