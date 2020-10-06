@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:account_manager_app/models/user_transaction.dart';
+import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -8,6 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 class PdfCreator {
   static Future createOneUserRapport(User user) async {
+    print(user.transactionList.length);
     final pdf =
         pw.Document(author: 'Account Manager', creator: 'Account Manager');
 
@@ -26,13 +28,21 @@ class PdfCreator {
                 child: pw.Table(children: [
                   pw.TableRow(children: [
                     pw.Text('Transaction Date',
-                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColor.fromInt(Colors.black.value))),
                     pw.Text('Particular',
-                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColor.fromInt(Colors.orange.value))),
                     pw.Text('Credit',
-                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColor.fromInt(Colors.green.value))),
                     pw.Text('Debit',
-                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColor.fromInt(Colors.red.value))),
                   ])
                 ])),
             pw.Table(
@@ -54,21 +64,48 @@ class PdfCreator {
                     child: pw.Column(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          pw.Text(
-                              'Credit Total Amount: ${_calculateCreditTotal(user)['credit']}',
-                              textAlign: pw.TextAlign.left,
-                              style:
-                                  pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                          pw.Text(
-                              'Debit Total Amount: ${_calculateCreditTotal(user)['debit']}',
-                              textAlign: pw.TextAlign.left,
-                              style:
-                                  pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                          pw.Text(
-                              'Balance Total Amount: ${_calculateCreditTotal(user)['balance']}',
-                              textAlign: pw.TextAlign.left,
-                              style:
-                                  pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                          pw.RichText(
+                            textAlign: pw.TextAlign.left,
+                            text: pw.TextSpan(
+                                text: 'Credit Total Amount: ',
+                                children: [
+                                  pw.TextSpan(
+                                      style: pw.TextStyle(
+                                        color: PdfColor.fromInt(
+                                            Colors.green.value),
+                                      ),
+                                      text:
+                                          '${_calculateCreditTotal(user)['credit']}')
+                                ]),
+                          ),
+                          pw.RichText(
+                            textAlign: pw.TextAlign.left,
+                            text: pw.TextSpan(
+                                text: 'Debit Total Amount:  ',
+                                children: [
+                                  pw.TextSpan(
+                                      style: pw.TextStyle(
+                                        color: PdfColor.fromInt(
+                                            Colors.green.value),
+                                      ),
+                                      text:
+                                          '${_calculateCreditTotal(user)['debit']}')
+                                ]),
+                          ),
+                          pw.RichText(
+                            textAlign: pw.TextAlign.left,
+                            text: pw.TextSpan(
+                                text: 'Balance Total Amount:  ',
+                                children: [
+                                  pw.TextSpan(
+                                      style: pw.TextStyle(
+                                        color: PdfColor.fromInt(
+                                            Colors.green.value),
+                                      ),
+                                      text:
+                                          '${_calculateCreditTotal(user)['balance']}')
+                                ]),
+                          ),
                         ])))
           ];
         }));
@@ -121,38 +158,50 @@ class PdfCreator {
   //Build Full List Widget
   static _buildFullList(List<User> users) {
     return users.map((User user) {
-      pw.Column(children: [
+      return pw.Column(children: [
         pw.Header(level: 2, child: pw.Text(user.name)),
         pw.Header(
             level: 2,
             child: pw.Table(children: [
               pw.TableRow(children: [
                 pw.Text('Transaction Date',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColor.fromInt(Colors.black.value))),
                 pw.Text('Particular',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColor.fromInt(Colors.orange.value))),
                 pw.Text('Credit',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColor.fromInt(Colors.green.value))),
                 pw.Text('Debit',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColor.fromInt(Colors.red.value))),
               ])
             ])),
         pw.Table(
             tableWidth: pw.TableWidth.max,
             children: user.transactionList.map((dynamic transaction) {
               return pw.TableRow(children: [
-                pw.Text(transaction.transactionDate,
-                    textAlign: pw.TextAlign.right,
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text(transaction.particular,
-                    textAlign: pw.TextAlign.right,
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text('${transaction.credit.toString()}',
-                    textAlign: pw.TextAlign.right,
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.Text('${transaction.debit.toString()}',
-                    textAlign: pw.TextAlign.right,
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                pw.Text(
+                  transaction.transactionDate,
+                  textAlign: pw.TextAlign.right,
+                ),
+                pw.Text(
+                  transaction.particular,
+                  textAlign: pw.TextAlign.right,
+                ),
+                pw.Text(
+                  '${transaction.credit.toString()}',
+                  textAlign: pw.TextAlign.right,
+                ),
+                pw.Text(
+                  '${transaction.debit.toString()}',
+                  textAlign: pw.TextAlign.right,
+                ),
               ]);
             }).toList()),
         pw.Header(
@@ -161,18 +210,37 @@ class PdfCreator {
             child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text(
-                      'Credit Total Amount: ${_calculateCreditTotal(user)['credit']}',
-                      textAlign: pw.TextAlign.left,
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text(
-                      'Debit Total Amount: ${_calculateCreditTotal(user)['debit']}',
-                      textAlign: pw.TextAlign.left,
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text(
-                      'Balance Total Amount: ${_calculateCreditTotal(user)['balance']}',
-                      textAlign: pw.TextAlign.left,
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  pw.RichText(
+                    textAlign: pw.TextAlign.left,
+                    text: pw.TextSpan(text: 'Credit Total Amount: ', children: [
+                      pw.TextSpan(
+                          style: pw.TextStyle(
+                            color: PdfColor.fromInt(Colors.green.value),
+                          ),
+                          text: '${_calculateCreditTotal(user)['credit']}')
+                    ]),
+                  ),
+                  pw.RichText(
+                    textAlign: pw.TextAlign.left,
+                    text: pw.TextSpan(text: 'Debit Total Amount:  ', children: [
+                      pw.TextSpan(
+                          style: pw.TextStyle(
+                            color: PdfColor.fromInt(Colors.green.value),
+                          ),
+                          text: '${_calculateCreditTotal(user)['debit']}')
+                    ]),
+                  ),
+                  pw.RichText(
+                    textAlign: pw.TextAlign.left,
+                    text:
+                        pw.TextSpan(text: 'Balance Total Amount:  ', children: [
+                      pw.TextSpan(
+                          style: pw.TextStyle(
+                            color: PdfColor.fromInt(Colors.green.value),
+                          ),
+                          text: '${_calculateCreditTotal(user)['balance']}')
+                    ]),
+                  ),
                 ]))
       ]);
     }).toList();

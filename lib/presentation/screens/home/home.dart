@@ -68,7 +68,7 @@ class Home extends StatelessWidget {
                   //Instead retuning the listView itself
                   return IconButton(
                       icon: Icon(
-                        Icons.save,
+                        Icons.print,
                         color: Colors.white,
                       ),
                       onPressed: () async =>

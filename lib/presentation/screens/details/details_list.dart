@@ -151,13 +151,37 @@ class DetailsList extends StatelessWidget {
 
   //Build floatingAction Button
   Padding get _buildFLoatingActionButton => Padding(
-        padding: const EdgeInsets.only(bottom: AppTheme.smallSpacing + 55),
-        child: FloatingActionButton(
-          onPressed: () async => await PdfCreator.createOneUserRapport(user),
-          child: Icon(Icons.download_rounded, color: AppTheme.creditColor),
-          tooltip: 'Create a user',
-        ),
-      );
+      padding: const EdgeInsets.only(bottom: AppTheme.smallSpacing + 55),
+      child: StreamBuilder<DocumentSnapshot>(
+          stream:
+              _transactionService.fetchOneUsersTransaction(userID: user.userID),
+          builder: (context, snapshot) {
+            if (snapshot.hasError)
+              return Container();
+            else if (snapshot.hasData) {
+              //Get documents
+              DocumentSnapshot _doc = snapshot.data;
+              User _user = User.fromDocumentSnaphot(_doc.id, _doc.data());
+
+              if (_user.transactionList.length == 0) {
+                return FloatingActionButton(
+                  onPressed: null,
+                  child:
+                      Icon(Icons.print_disabled, color: AppTheme.creditColor),
+                  tooltip: 'View rapport',
+                );
+              }
+              return FloatingActionButton(
+                onPressed: () async =>
+                    await PdfCreator.createOneUserRapport(_user),
+                child: Icon(Icons.print, color: AppTheme.creditColor),
+                tooltip: 'View rapport',
+              );
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }));
 
   //SHow ALertDialog
   _showDialog(context, User user) {
