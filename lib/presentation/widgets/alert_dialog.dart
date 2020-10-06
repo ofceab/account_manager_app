@@ -191,11 +191,4 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
 
   //Cancel handler
   void _cancelHandler(BuildContext context) => Navigator.pop(context);
-
-  // TextFormField(
-  //               controller: _dateController,
-  //               validator: (String value) {
-  //                 if (value.isEmpty) return 'Enter a date';
-  //                 return null;
-  //               }
 }

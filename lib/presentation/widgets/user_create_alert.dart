@@ -49,7 +49,8 @@ class _UserCreateAlertState extends State<UserCreateAlert> {
 
   _validateNameAndCreateUserField() {
     if (_usernameController.text.isNotEmpty) {
-      User _user = User(name: _usernameController.text, transactionList: <Transaction>[]);
+      User _user = User(
+          name: _usernameController.text, transactionList: <Transaction>[]);
       widget._transactionService.createAUser(userData: _user.userToMap());
       Navigator.pop(context);
     }
