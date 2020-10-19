@@ -6,6 +6,10 @@ mixin TransactionHelpers {
   final CollectionReference _transactions =
       FirebaseFirestore.instance.collection('transactions');
 
+  //Getting transaction reference
+  final CollectionReference _deletedUsers =
+      FirebaseFirestore.instance.collection('deletedUsers');
+
   //Create a user
   Future<void> createAUser({@required Map<String, dynamic> userData}) {
     assert(userData != null);
@@ -18,10 +22,22 @@ mixin TransactionHelpers {
   }
 
   //Delete a user
-  Future<void> deleteAUser({@required String docId}) {
+  Future<void> deleteAUser({@required String docId, bool onDeleted}) async {
     assert(docId != null);
     try {
+      if (onDeleted) {
+        //here we delete the user fom the deleteUsers collection
+        //Here getting user data
+        _deletedUsers.doc(docId).delete();
+        return null;
+      }
+
+      //here we delete the user fom the transaction collection
+
+      //Here getting user data
+      final DocumentSnapshot _userData = await _transactions.doc(docId).get();
       _transactions.doc(docId).delete();
+      _deletedUsers.doc(docId).set(_userData.data());
       return null;
     } catch (e) {
       rethrow;
@@ -42,6 +58,9 @@ mixin TransactionHelpers {
       await _transactions
           .doc(docId)
           .update({'transactionList': newTransactionList});
+      final DocumentSnapshot _userData = await _deletedUsers.doc(docId).get();
+      _deletedUsers.doc(docId).set(_userData.data());
+
       return operationType == 'add'
           ? 'Transaction has been added'
           : 'Transaction has be edited';
@@ -56,6 +75,10 @@ mixin TransactionHelpers {
   //Get all usersTransaction
   Stream<QuerySnapshot> fetchAllUsersTransaction({String userID}) =>
       _transactions.snapshots(includeMetadataChanges: true);
+
+  //Get all deleted users
+  Stream<QuerySnapshot> fetchAllUsersDeletedTransaction({String userID}) =>
+      _deletedUsers.snapshots(includeMetadataChanges: true);
 
   //Get one userTransaction
   Stream<DocumentSnapshot> fetchOneUsersTransaction(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:account_manager_app/models/user_transaction.dart';
+import 'package:account_manager_app/services/pdf_monthly_option/pdf_monthly_feature.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,7 +9,13 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class PdfCreator {
+  //Get instance of monthlyDate
+  MonthlyDate _monthlyDate = MonthlyDate.monthyDate;
+
   static Future createOneUserRapport(User user) async {
+    if (!(await _monthlyDate.getPdfDate())) {
+      return false; //For not ready
+    }
     print(user.transactionList.length);
     final pdf =
         pw.Document(author: 'Account Manager', creator: 'Account Manager');

@@ -1,16 +1,15 @@
 import 'package:account_manager_app/helpers/appTheme.dart';
 import 'package:account_manager_app/models/user_transaction.dart';
-import 'package:account_manager_app/presentation/screens/delete/delete_screen.dart';
 import 'package:account_manager_app/presentation/screens/error/error.dart';
+import 'package:account_manager_app/presentation/screens/home/home.dart';
 import 'package:account_manager_app/presentation/screens/loading/loading.dart';
 import 'package:account_manager_app/presentation/widgets/transaction_list_item.dart';
-import 'package:account_manager_app/presentation/widgets/user_create_alert.dart';
 import 'package:account_manager_app/services/pdf/pdf_creator.dart';
 import 'package:account_manager_app/services/transaction_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
+class DeleteScreen extends StatelessWidget {
   //Get our singleton firebaseService object
   final TransactionService _transactionService =
       TransactionService.getTransactionServiceInstance;
@@ -18,10 +17,9 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: _buildDrawer(context),
         bottomNavigationBar: BottomAppBar(
           child: StreamBuilder(
-            stream: _transactionService.fetchAllUsersTransaction(),
+            stream: _transactionService.fetchAllUsersDeletedTransaction(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<QueryDocumentSnapshot> _docs = snapshot.data.docs;
@@ -56,11 +54,16 @@ class Home extends StatelessWidget {
         ),
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
-          title: Text('Dashboard'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Home())),
+          ),
+          title: Text('Deleted Users Dashboard'),
           centerTitle: true,
           actions: [
             StreamBuilder(
-              stream: _transactionService.fetchAllUsersTransaction(),
+              stream: _transactionService.fetchAllUsersDeletedTransaction(),
               builder: (context, snapshot) {
                 if (snapshot.hasError)
                   return Error();
@@ -80,12 +83,11 @@ class Home extends StatelessWidget {
                       ),
                       onPressed: () async =>
                           await PdfCreator.createAllUsersRapports(
-                                  _docs.map((doc) {
+                              _docs.map((doc) {
                             User user =
                                 User.fromDocumentSnaphot(doc.id, doc.data());
                             return user;
-                          }).toList())
-                              .then((value) => _showPDFAlert(value, context)));
+                          }).toList()));
                 }
                 //Loading
                 return Loading();
@@ -93,17 +95,12 @@ class Home extends StatelessWidget {
             )
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _showDialog(context),
-          child: Icon(Icons.add, color: Colors.white),
-          tooltip: 'Create a user',
-        ),
         body: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: AppTheme.generalOutSpacing - 10,
             ),
             child: StreamBuilder<QuerySnapshot>(
-              stream: _transactionService.fetchAllUsersTransaction(),
+              stream: _transactionService.fetchAllUsersDeletedTransaction(),
               builder: (context, snapshot) {
                 if (snapshot.hasError)
                   return Error();
@@ -111,7 +108,7 @@ class Home extends StatelessWidget {
                   //Get documents
                   List<QueryDocumentSnapshot> _docs = snapshot.data.docs;
                   if (snapshot.data.size == 0) {
-                    return Center(child: Text('No User yet'));
+                    return Center(child: Text('No User deleted yet'));
                   }
 
                   //Instead retuning the listView itself
@@ -123,7 +120,7 @@ class Home extends StatelessWidget {
                           _docs[index].id, _docs[index].data());
                       return TransactionListItem(
                         user: user,
-                        deleted: false,
+                        deleted: true,
                       );
                     },
                   );
@@ -132,63 +129,6 @@ class Home extends StatelessWidget {
                 return Loading();
               },
             )));
-  }
-
-  Drawer _buildDrawer(BuildContext context) {
-    return Drawer(
-      child: SafeArea(
-        child: Container(
-          color: Colors.grey.withOpacity(0.1),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(color: Colors.white),
-                child: CircleAvatar(
-                  radius: 50,
-                  child: Icon(
-                    Icons.monetization_on_outlined,
-                    size: 40,
-                  ),
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)),
-                child: InkWell(
-                  onTap: () => Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Home())),
-                  child: ListTile(
-                    leading: Icon(Icons.delete_outline_outlined),
-                    title: Text('Current Transaction'),
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 8),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)),
-                child: InkWell(
-                  onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => DeleteScreen())),
-                  child: ListTile(
-                    leading: Icon(Icons.delete_outline_outlined),
-                    title: Text('Deleted Transactions'),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  _showDialog(BuildContext context) {
-    showDialog(context: context, child: UserCreateAlert());
   }
 
   //Build container
@@ -209,17 +149,4 @@ class Home extends StatelessWidget {
           )),
     );
   }
-
-  //Show alert of the pdf
-  _showPDFAlert(value, BuildContext context) => showDialog(
-      context: context,
-      child: AlertDialog(
-        title: Text(
-          'PDF Not available actually',
-          style: TextStyle(
-            fontSize: 24,
-            color: Colors.red,
-          ),
-        ),
-      ));
 }

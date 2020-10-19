@@ -5,17 +5,19 @@ import 'package:account_manager_app/services/transaction_services.dart';
 import 'package:flutter/material.dart';
 
 class TransactionListItem extends StatelessWidget {
+  final bool deleted;
   final User user;
   final TransactionService _transactionService =
       TransactionService.getTransactionServiceInstance;
 
-  TransactionListItem({@required this.user}) : assert(user != null);
+  TransactionListItem({@required this.user, this.deleted: false})
+      : assert(user != null);
 
   @override
   Widget build(BuildContext context) {
     print(user.transactionList);
     return GestureDetector(
-      onTap: () => _pushToDetailsScreen(context),
+      onTap: () => (!this.deleted) ? _pushToDetailsScreen(context) : null,
       child: Container(
         color: Colors.white,
         margin: const EdgeInsets.only(top: AppTheme.generalOutSpacing),
@@ -87,7 +89,13 @@ class TransactionListItem extends StatelessWidget {
 
   //Handler to delete user;
   Future _deleteUserHandler() async {
-    await _transactionService.deleteAUser(docId: user.userID);
+    if (this.deleted) {
+      await _transactionService.deleteAUser(
+          docId: user.userID, onDeleted: true);
+      return null;
+    }
+    await _transactionService.deleteAUser(
+        docId: user.userID, onDeleted: this.deleted);
   }
 
   //Push to another screen(the details screen)
