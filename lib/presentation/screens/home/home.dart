@@ -162,7 +162,7 @@ class Home extends StatelessWidget {
                   onTap: () => Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) => Home())),
                   child: ListTile(
-                    leading: Icon(Icons.delete_outline_outlined),
+                    leading: Icon(Icons.stacked_line_chart_sharp),
                     title: Text('Current Transaction'),
                   ),
                 ),
