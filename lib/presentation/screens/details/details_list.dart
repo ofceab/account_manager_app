@@ -1,4 +1,5 @@
 import 'package:account_manager_app/cubit/rebuild_fixer.dart';
+import 'package:account_manager_app/helpers/alert_function.dart';
 import 'package:account_manager_app/helpers/appTheme.dart';
 import 'package:account_manager_app/models/transaction.dart' as Transaction;
 import 'package:account_manager_app/models/user_transaction.dart';
@@ -173,7 +174,8 @@ class DetailsList extends StatelessWidget {
               }
               return FloatingActionButton(
                 onPressed: () async =>
-                    await PdfCreator.createOneUserRapport(_user),
+                    await PdfCreator.createOneUserRapport(_user)
+                        .then((value) => showPDFAlert(value, context)),
                 child: Icon(Icons.print, color: AppTheme.creditColor),
                 tooltip: 'View rapport',
               );

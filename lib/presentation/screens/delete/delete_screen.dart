@@ -1,3 +1,4 @@
+import 'package:account_manager_app/helpers/alert_function.dart';
 import 'package:account_manager_app/helpers/appTheme.dart';
 import 'package:account_manager_app/models/user_transaction.dart';
 import 'package:account_manager_app/presentation/screens/error/error.dart';
@@ -83,11 +84,12 @@ class DeleteScreen extends StatelessWidget {
                       ),
                       onPressed: () async =>
                           await PdfCreator.createAllUsersRapports(
-                              _docs.map((doc) {
+                                  _docs.map((doc) {
                             User user =
                                 User.fromDocumentSnaphot(doc.id, doc.data());
                             return user;
-                          }).toList()));
+                          }).toList())
+                              .then((value) => showPDFAlert(value, context)));
                 }
                 //Loading
                 return Loading();

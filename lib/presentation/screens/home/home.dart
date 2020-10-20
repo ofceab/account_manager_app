@@ -1,3 +1,4 @@
+import 'package:account_manager_app/helpers/alert_function.dart';
 import 'package:account_manager_app/helpers/appTheme.dart';
 import 'package:account_manager_app/models/user_transaction.dart';
 import 'package:account_manager_app/presentation/screens/delete/delete_screen.dart';
@@ -85,7 +86,7 @@ class Home extends StatelessWidget {
                                 User.fromDocumentSnaphot(doc.id, doc.data());
                             return user;
                           }).toList())
-                              .then((value) => _showPDFAlert(value, context)));
+                              .then((value) => showPDFAlert(value, context)));
                 }
                 //Loading
                 return Loading();
@@ -209,17 +210,4 @@ class Home extends StatelessWidget {
           )),
     );
   }
-
-  //Show alert of the pdf
-  _showPDFAlert(value, BuildContext context) => showDialog(
-      context: context,
-      child: AlertDialog(
-        title: Text(
-          'PDF Not available actually',
-          style: TextStyle(
-            fontSize: 24,
-            color: Colors.red,
-          ),
-        ),
-      ));
 }

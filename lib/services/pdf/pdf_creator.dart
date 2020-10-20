@@ -10,11 +10,11 @@ import 'package:pdf/widgets.dart' as pw;
 
 class PdfCreator {
   //Get instance of monthlyDate
-  MonthlyDate _monthlyDate = MonthlyDate.monthyDate;
+  static MonthlyDate _monthlyDate = MonthlyDate.monthyDate;
 
   static Future createOneUserRapport(User user) async {
-    if (!(await _monthlyDate.getPdfDate())) {
-      return false; //For not ready
+    if ((await _monthlyDate.getPdfDate()) != true) {
+      return await _monthlyDate.getPdfDate(); //For not ready
     }
     print(user.transactionList.length);
     final pdf =
@@ -120,11 +120,16 @@ class PdfCreator {
     final String path = '$directory/account-${user.name}.pdf';
     final File file = File(path);
     file.writeAsBytes(pdf.save());
+    _monthlyDate.updateDate();
     //Open the PDF document in mobile
     OpenFile.open(path);
   }
 
   static Future createAllUsersRapports(List<User> users) async {
+    if ((await _monthlyDate.getPdfDate()) != true) {
+      return await _monthlyDate.getPdfDate(); //For not ready
+    }
+
     final pdf =
         pw.Document(author: 'Account Manager', creator: 'Account Manager');
 
@@ -146,6 +151,7 @@ class PdfCreator {
     final String path = '$directory/account-full-report.pdf';
     final File file = File(path);
     file.writeAsBytes(pdf.save());
+    _monthlyDate.updateDate();
     //Open the PDF document in mobile
     OpenFile.open(path);
   }
